@@ -1,0 +1,5 @@
+{
+  "name": "Canlı Maç Tahminleri",
+  "description": "Kullanıcıların canlı maç tahminleri yayınlayabildiği ve ziyaretçilerin bu tahminleri takip edebildiği bir web uygulaması.",
+  "requestFramePermissions": []
+}
