@@ -7,6 +7,7 @@ interface CombinedCouponCardProps {
   onDelete: (id: string) => void;
   onUpdateBetStatus: (couponId: string, betIndex: number, status: PredictionStatus) => void;
   onEdit: (coupon: CombinedCoupon) => void;
+  isAdmin: boolean;
 }
 
 const statusStyles = {
@@ -30,7 +31,7 @@ const StatusBadge: React.FC<{ status: PredictionStatus }> = ({ status }) => {
   );
 };
 
-const CombinedCouponCard: React.FC<CombinedCouponCardProps> = ({ coupon, onUpdateStatus, onDelete, onUpdateBetStatus, onEdit }) => {
+const CombinedCouponCard: React.FC<CombinedCouponCardProps> = ({ coupon, onUpdateStatus, onDelete, onUpdateBetStatus, onEdit, isAdmin }) => {
   const baseCardStyle = "bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-cyan-500/20 hover:-translate-y-1 flex flex-col";
   const borderStyle = {
     [PredictionStatus.Pending]: 'border-t-4 border-yellow-500',
@@ -61,7 +62,7 @@ const CombinedCouponCard: React.FC<CombinedCouponCardProps> = ({ coupon, onUpdat
                     <p className="text-sm text-gray-200 truncate">{bet.homeTeam} - {bet.awayTeam}</p>
                     <p className="text-sm font-bold text-cyan-300">{bet.prediction} @{bet.odds.toFixed(2)}</p>
                  </div>
-                 {coupon.status === PredictionStatus.Pending && (
+                 {isAdmin && coupon.status === PredictionStatus.Pending && (
                     <div className="flex space-x-1 ml-2 flex-shrink-0">
                         <button onClick={() => onUpdateBetStatus(coupon.id, index, PredictionStatus.Won)} className="w-5 h-5 text-xs bg-green-600 hover:bg-green-700 rounded-full text-white flex items-center justify-center font-bold">✓</button>
                         <button onClick={() => onUpdateBetStatus(coupon.id, index, PredictionStatus.Lost)} className="w-5 h-5 text-xs bg-red-600 hover:bg-red-700 rounded-full text-white flex items-center justify-center font-bold">✕</button>
@@ -86,48 +87,50 @@ const CombinedCouponCard: React.FC<CombinedCouponCardProps> = ({ coupon, onUpdat
         </div>
       </div>
       
-      <div className="p-4 bg-gray-800 flex justify-end space-x-2">
-        {coupon.status === PredictionStatus.Pending ? (
-          <>
+      {isAdmin && (
+        <div className="p-4 bg-gray-800 flex justify-end space-x-2">
+            {coupon.status === PredictionStatus.Pending ? (
+              <>
+                <button
+                  onClick={() => onUpdateStatus(coupon.id, PredictionStatus.Won)}
+                  className="px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition"
+                  aria-label="Kazandı olarak işaretle"
+                >
+                  Kazandı
+                </button>
+                <button
+                  onClick={() => onUpdateStatus(coupon.id, PredictionStatus.Lost)}
+                  className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition"
+                  aria-label="Kaybetti olarak işaretle"
+                >
+                  Kaybetti
+                </button>
+              </>
+            ) : (
+                <button
+                  onClick={() => onUpdateStatus(coupon.id, PredictionStatus.Pending)}
+                  className="px-3 py-1.5 text-xs font-medium text-white bg-yellow-600 hover:bg-yellow-700 rounded-md transition"
+                  aria-label="Durumu geri al"
+                >
+                  Geri Al
+                </button>
+            )}
             <button
-              onClick={() => onUpdateStatus(coupon.id, PredictionStatus.Won)}
-              className="px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition"
-              aria-label="Kazandı olarak işaretle"
+              onClick={() => onEdit(coupon)}
+              className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition"
+              aria-label="Kuponu düzenle"
             >
-              Kazandı
+              Düzenle
             </button>
             <button
-              onClick={() => onUpdateStatus(coupon.id, PredictionStatus.Lost)}
-              className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition"
-              aria-label="Kaybetti olarak işaretle"
+              onClick={() => onDelete(coupon.id)}
+              className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-600 hover:bg-gray-500 rounded-md transition"
+              aria-label="Kuponu sil"
             >
-              Kaybetti
+              Sil
             </button>
-          </>
-        ) : (
-            <button
-              onClick={() => onUpdateStatus(coupon.id, PredictionStatus.Pending)}
-              className="px-3 py-1.5 text-xs font-medium text-white bg-yellow-600 hover:bg-yellow-700 rounded-md transition"
-              aria-label="Durumu geri al"
-            >
-              Geri Al
-            </button>
-        )}
-        <button
-          onClick={() => onEdit(coupon)}
-          className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition"
-          aria-label="Kuponu düzenle"
-        >
-          Düzenle
-        </button>
-        <button
-          onClick={() => onDelete(coupon.id)}
-          className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-600 hover:bg-gray-500 rounded-md transition"
-          aria-label="Kuponu sil"
-        >
-          Sil
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

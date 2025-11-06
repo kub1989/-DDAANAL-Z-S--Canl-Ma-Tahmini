@@ -5,18 +5,28 @@ import CombinedCouponCard from './CombinedCouponCard';
 
 interface PredictionListProps {
   predictions: Prediction[];
+  totalCountInView: number;
   onUpdateStatus: (id: string, status: PredictionStatus) => void;
   onDelete: (id: string) => void;
   onUpdateBetStatus: (couponId: string, betIndex: number, status: PredictionStatus) => void;
   onEdit: (prediction: Prediction) => void;
+  isAdmin: boolean;
 }
 
-const PredictionList: React.FC<PredictionListProps> = ({ predictions, onUpdateStatus, onDelete, onUpdateBetStatus, onEdit }) => {
+const PredictionList: React.FC<PredictionListProps> = ({ predictions, totalCountInView, onUpdateStatus, onDelete, onUpdateBetStatus, onEdit, isAdmin }) => {
   if (predictions.length === 0) {
+    if (totalCountInView > 0) {
+       return (
+        <div className="text-center py-12 bg-gray-800 rounded-xl">
+          <h3 className="text-xl text-gray-400">Bu filtreyle eşleşen bir tahmin bulunamadı.</h3>
+          <p className="text-gray-500 mt-2">Filtre seçeneklerini değiştirmeyi deneyin.</p>
+        </div>
+      );
+    }
     return (
       <div className="text-center py-12 bg-gray-800 rounded-xl">
         <h3 className="text-xl text-gray-400">Bu bölümde henüz yayınlanmış bir tahmin yok.</h3>
-        <p className="text-gray-500 mt-2">Yukarıdaki panelden yeni bir tahmin ekleyebilirsiniz.</p>
+        {isAdmin && <p className="text-gray-500 mt-2">Yukarıdaki panelden yeni bir tahmin ekleyebilirsiniz.</p>}
       </div>
     );
   }
@@ -32,6 +42,7 @@ const PredictionList: React.FC<PredictionListProps> = ({ predictions, onUpdateSt
               onUpdateStatus={onUpdateStatus}
               onDelete={onDelete}
               onEdit={onEdit}
+              isAdmin={isAdmin}
             />
           );
         }
@@ -44,6 +55,7 @@ const PredictionList: React.FC<PredictionListProps> = ({ predictions, onUpdateSt
               onDelete={onDelete}
               onUpdateBetStatus={onUpdateBetStatus}
               onEdit={onEdit}
+              isAdmin={isAdmin}
             />
           );
         }

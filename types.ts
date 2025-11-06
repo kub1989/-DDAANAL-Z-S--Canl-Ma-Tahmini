@@ -9,6 +9,11 @@ export enum PredictionType {
   Combined = 'Kombine',
 }
 
+export interface User {
+  email: string;
+  role: 'admin' | 'user';
+}
+
 // Kombine kupon içindeki tek bir bahis için arayüz
 export interface Bet {
   league: string;
