@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from './contexts/AuthContext';
 import LoginPage from './components/LoginPage';
 import AdminDashboard from './components/AdminDashboard';
+import GoogleLoginModal from './components/GoogleLoginModal';
 
 const App: React.FC = () => {
   const auth = useContext(AuthContext);
@@ -10,7 +11,7 @@ const App: React.FC = () => {
     return <div>Yükleniyor...</div>; // Veya bir yükleme göstergesi
   }
   
-  const { user, loading } = auth;
+  const { user, loading, isGoogleLoginOpen, handleLogin, closeGoogleLoginModal } = auth;
 
   if (loading) {
     return (
@@ -23,6 +24,11 @@ const App: React.FC = () => {
   return (
     <>
       {user ? <AdminDashboard /> : <LoginPage />}
+      <GoogleLoginModal 
+        isOpen={isGoogleLoginOpen}
+        onClose={closeGoogleLoginModal}
+        onLogin={handleLogin}
+      />
     </>
   );
 };

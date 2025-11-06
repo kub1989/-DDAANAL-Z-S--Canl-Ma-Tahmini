@@ -6,6 +6,9 @@ interface AuthContextType {
   loading: boolean;
   loginWithGoogle: () => void;
   logout: () => void;
+  isGoogleLoginOpen: boolean;
+  handleLogin: (email: string) => void;
+  closeGoogleLoginModal: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +22,7 @@ const ADMIN_EMAIL = 'ktarikulu@gmail.com';
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGoogleLoginOpen, setIsGoogleLoginOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -39,17 +43,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const newUser: User = { email, role };
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(newUser);
+    setIsGoogleLoginOpen(false); // Modalı kapat
     setLoading(false);
   };
 
   const loginWithGoogle = () => {
-    // Bu, gerçek Google ile Giriş akışını simüle eder.
     // Gerçek bir Firebase entegrasyonunda, burada Google'ın popup'ı açılır.
-    const email = window.prompt("Simülasyon için Google e-postanızı girin:", "ktarikulu@gmail.com");
-    if (email) {
-      handleLogin(email);
-    }
+    // Simülasyon için sadece modalı açıyoruz.
+    setIsGoogleLoginOpen(true);
   };
+
+  const closeGoogleLoginModal = () => {
+    setIsGoogleLoginOpen(false);
+  }
 
   const logout = () => {
     setLoading(true);
@@ -59,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout, isGoogleLoginOpen, handleLogin, closeGoogleLoginModal }}>
       {children}
     </AuthContext.Provider>
   );
